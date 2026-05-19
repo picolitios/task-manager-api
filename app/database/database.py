@@ -5,9 +5,16 @@ class MongoDBManager:
     client: AsyncIOMotorClient = None
     db = None
 
-    def connect(self):
+    async def connect(self):
         self.client = AsyncIOMotorClient(settings.MONGODB_URL)
         self.db = self.client[settings.DATABASE_NAME]
+        
+        # Verify connection
+        await self.client.admin.command('ping')
+        
+        # Create unique index for user email
+        await self.db.users.create_index("email", unique=True)
+        
         print("Connected to MongoDB via Motor.")
 
     def close(self):

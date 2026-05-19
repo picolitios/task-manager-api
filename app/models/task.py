@@ -5,9 +5,10 @@ class TaskModel:
     """
     Representation of a Task document in MongoDB.
     """
-    def __init__(self, title: str, description: Optional[str] = None):
+    def __init__(self, title: str, owner_id: str, description: Optional[str] = None):
         self.title = title
         self.description = description
+        self.owner_id = owner_id
         self.completed = False
         self.created_at = datetime.utcnow()
         self.updated_at = datetime.utcnow()
@@ -16,6 +17,7 @@ class TaskModel:
         return {
             "title": self.title,
             "description": self.description,
+            "owner_id": self.owner_id,
             "completed": self.completed,
             "created_at": self.created_at,
             "updated_at": self.updated_at

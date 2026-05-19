@@ -22,28 +22,28 @@ class TaskRepository:
         created_task = await self.collection.find_one({"_id": result.inserted_id})
         return serialize_task(created_task)
 
-    async def get_by_id(self, task_id: str) -> Optional[dict]:
-        task = await self.collection.find_one({"_id": ObjectId(task_id)})
+    async def get_by_id_and_owner(self, task_id: str, owner_id: str) -> Optional[dict]:
+        task = await self.collection.find_one({"_id": ObjectId(task_id), "owner_id": owner_id})
         if task:
             return serialize_task(task)
         return None
 
-    async def list_all(self, skip: int = 0, limit: int = 100) -> List[dict]:
-        cursor = self.collection.find().skip(skip).limit(limit)
+    async def list_all_by_owner(self, owner_id: str, skip: int = 0, limit: int = 100) -> List[dict]:
+        cursor = self.collection.find({"owner_id": owner_id}).skip(skip).limit(limit)
         tasks = await cursor.to_list(length=limit)
         return [serialize_task(task) for task in tasks]
 
-    async def update(self, task_id: str, update_data: dict) -> Optional[dict]:
+    async def update(self, task_id: str, owner_id: str, update_data: dict) -> Optional[dict]:
         await self.collection.update_one(
-            {"_id": ObjectId(task_id)},
+            {"_id": ObjectId(task_id), "owner_id": owner_id},
             {"$set": update_data}
         )
 
-        task = await self.collection.find_one({"_id": ObjectId(task_id)})
+        task = await self.collection.find_one({"_id": ObjectId(task_id), "owner_id": owner_id})
         if task:
             return serialize_task(task)
         return None
 
-    async def delete(self, task_id: str) -> bool:
-        result = await self.collection.delete_one({"_id": ObjectId(task_id)})
+    async def delete(self, task_id: str, owner_id: str) -> bool:
+        result = await self.collection.delete_one({"_id": ObjectId(task_id), "owner_id": owner_id})
         return result.deleted_count == 1

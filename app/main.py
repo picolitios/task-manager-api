@@ -13,7 +13,7 @@ print("VALOR REAL DO MONGO:", repr(settings.MONGODB_URL))
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup: Connect to DB
-    db_manager.connect()
+    await db_manager.connect()
     yield
     # Shutdown: Close DB
     db_manager.close()

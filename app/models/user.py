@@ -1,24 +1,18 @@
-from pydantic import BaseModel, EmailStr, Field
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Dict, Any
 
+class UserModel:
+    """
+    Representation of a User document in MongoDB.
+    """
+    def __init__(self, email: str, hashed_password: str):
+        self.email = email
+        self.hashed_password = hashed_password
+        self.created_at = datetime.utcnow()
 
-class UserCreate(BaseModel):
-    name: str = Field(..., min_length=3, max_length=100)
-    email: EmailStr
-    password: str = Field(..., min_length=6)
-
-
-class UserInDB(BaseModel):
-    id: Optional[str] = None
-    name: str
-    email: EmailStr
-    hashed_password: str
-    created_at: datetime = datetime.utcnow()
-
-
-class UserResponse(BaseModel):
-    id: Optional[str] = None
-    name: str
-    email: EmailStr
-    created_at: datetime
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "email": self.email,
+            "hashed_password": self.hashed_password,
+            "created_at": self.created_at
+        }
