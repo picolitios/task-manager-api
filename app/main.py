@@ -7,8 +7,6 @@ from app.database.database import db_manager
 from app.routes import tasks
 from app.routes import auth
 
-print("VALOR REAL DO MONGO:", repr(settings.MONGODB_URL))
-
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
